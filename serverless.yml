@@ -1,0 +1,28 @@
+org: hunlam
+app: fullstack-test-serverless
+service: fullstack-test-serverless
+
+frameworkVersion: '2'
+
+useDotenv: true
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  lambdaHashingVersion: '20201221'
+
+plugins:
+  - '@hewmen/serverless-plugin-typescript'
+  - serverless-plugin-optimize
+  - serverless-offline
+
+package:
+  individually: true
+
+functions:
+  main:
+    handler: src/main.handler
+    events:
+      - http:
+          method: any
+          path: /{proxy+}
