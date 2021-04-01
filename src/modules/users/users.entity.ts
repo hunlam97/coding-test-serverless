@@ -1,16 +1,22 @@
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Entity, Column, PrimaryColumn } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryColumn,
+  CreateDateColumn,
+  DeleteDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
+import { UserDto } from './dto/user.dto';
 
 @Entity({
   name: 'Users',
 })
-export class UsersEntity {
-  @PrimaryColumn({
-    type: 'string',
-  })
+export class UsersEntity implements UserDto {
+  @PrimaryColumn({ type: 'varchar' })
   firebaseId: string;
 
-  @Column({ type: 'string' })
+  @Column({ type: 'varchar' })
   name: string;
 
   @Column({ type: 'date' })
@@ -21,6 +27,15 @@ export class UsersEntity {
 
   @Column({ default: true, type: 'boolean' })
   isActive: boolean;
+
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
+
+  @DeleteDateColumn()
+  deletedAt: Date | null;
 }
 
 export const UsersRepository = TypeOrmModule.forFeature([UsersEntity]);

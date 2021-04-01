@@ -1,18 +1,41 @@
-import { Controller, Get, Patch, Post, Body, Param } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Patch,
+  Post,
+  Body,
+  UseGuards,
+  Request,
+} from '@nestjs/common';
+import { AuthGuard } from '../../guards/auth.guard';
+import { PublicUserDto, UpdateUserDto } from './dto';
 import { UsersService } from './users.service';
 
 @Controller({ path: '/users' })
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Get('/:firebaseId')
-  getById(@Param('firebaseId') firebaseId: string) {
-    return this.usersService.ping();
+  @UseGuards(AuthGuard)
+  @Get('/ping')
+  ping(@Request() req: Express.Request & { currentUser: PublicUserDto }) {
+    return req.currentUser;
   }
 
-  @Post('/create/:firebaseId')
-  create(@Param('firebaseId') firebaseId: string) {}
+  @UseGuards(AuthGuard)
+  @Get('/me')
+  getById(@Request() req: Express.Request & { currentUser: PublicUserDto }) {
+    return req.currentUser;
+  }
 
-  @Patch('/edit/:firebaseId')
-  edit(@Param('firebaseId') firebaseId: string) {}
+  @Post('/create')
+  create(@Body() body: PublicUserDto) {}
+
+  @UseGuards(AuthGuard)
+  @Patch('/edit')
+  edit(
+    @Request() req: Express.Request & { currentUser: PublicUserDto },
+    @Body() body: UpdateUserDto,
+  ) {
+    return this.usersService.edit(req.currentUser.firebaseId, body);
+  }
 }

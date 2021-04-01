@@ -1,24 +1,38 @@
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+  DeleteDateColumn,
+} from 'typeorm';
+import { BlogDto } from './dto/blog.dto';
 
 @Entity({
   name: 'Blogs',
 })
-export class BlogsEntity {
+export class BlogsEntity implements BlogDto {
   @PrimaryGeneratedColumn()
-  id: string;
+  id: number;
 
-  @Column({ type: 'string' })
-  name: string;
+  @Column({ type: 'varchar' })
+  title: string;
 
-  @Column({ type: 'date' })
-  dob: Date;
+  @Column({ type: 'varchar' })
+  content: string;
 
   @Column({ default: false, type: 'boolean' })
-  isAdmin: boolean;
+  isArchived: boolean;
 
-  @Column({ default: true, type: 'boolean' })
-  isActive: boolean;
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
+
+  @DeleteDateColumn()
+  deletedAt: Date | null;
 }
 
 export const BlogsRepository = TypeOrmModule.forFeature([BlogsEntity]);

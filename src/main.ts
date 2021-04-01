@@ -2,12 +2,14 @@ import { Handler, Context } from 'aws-lambda';
 import { Server } from 'http';
 import { createServer, proxy } from 'aws-serverless-express';
 import { eventContext } from 'aws-serverless-express/middleware';
+import cookieParser from 'cookie-parser';
 
 import { NestFactory } from '@nestjs/core';
 import { ExpressAdapter } from '@nestjs/platform-express';
 import { AppModule } from './app.module';
 
-import * as express from 'express';
+import express from 'express';
+import { ValidationPipe } from '@nestjs/common';
 
 const binaryMimeTypes: string[] = [];
 
@@ -27,7 +29,9 @@ async function bootstrapServer(): Promise<Server> {
       const expressApp = express();
       const adapter = new ExpressAdapter(expressApp);
       const nestApp = await NestFactory.create(AppModule, adapter);
+      nestApp.useGlobalPipes(new ValidationPipe());
       nestApp.use(eventContext());
+      nestApp.use(cookieParser());
       await nestApp.init();
       cachedServer = createServer(expressApp, undefined, binaryMimeTypes);
     } catch (error) {

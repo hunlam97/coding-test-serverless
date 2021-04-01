@@ -1,5 +1,5 @@
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { BlogsEntity } from 'src/modules/blogs/blogs.entity';
+import { BlogsEntity } from '../modules/blogs/blogs.entity';
 import { UsersEntity } from '../modules/users/users.entity';
 
 export const DatabaseProvider = TypeOrmModule.forRoot({
@@ -9,6 +9,6 @@ export const DatabaseProvider = TypeOrmModule.forRoot({
   username: process.env.DB_USERNAME,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_DATABASE,
-  entities: [UsersEntity, BlogsEntity],
   synchronize: true,
+  autoLoadEntities: true,
 });
