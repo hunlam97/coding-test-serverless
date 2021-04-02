@@ -1,21 +1,21 @@
 import { BlogDto } from '.';
-import {
-  IsNotEmpty,
-  IsBoolean,
-  IsAlphanumeric,
-  IsNumber,
-} from 'class-validator';
+import { IsNotEmpty, IsOptional, IsUrl, IsString } from 'class-validator';
 
 export class CreateBlogDto
-  implements Omit<BlogDto, 'id' | 'createdAt' | 'updatedAt' | 'deletedAt'> {
+  implements
+    Omit<
+      BlogDto,
+      'id' | 'createdAt' | 'updatedAt' | 'deletedAt' | 'isArchived'
+    > {
   @IsNotEmpty()
-  @IsAlphanumeric()
+  @IsString()
   title: string;
 
-  @IsNotEmpty()
-  @IsAlphanumeric()
-  content: string;
+  @IsOptional()
+  @IsUrl()
+  imageUrl: string;
 
-  @IsBoolean()
-  isArchived: boolean;
+  @IsNotEmpty()
+  @IsString()
+  content: string;
 }

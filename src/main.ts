@@ -29,6 +29,7 @@ async function bootstrapServer(): Promise<Server> {
       const expressApp = express();
       const adapter = new ExpressAdapter(expressApp);
       const nestApp = await NestFactory.create(AppModule, adapter);
+      nestApp.enableCors();
       nestApp.useGlobalPipes(new ValidationPipe());
       nestApp.use(eventContext());
       nestApp.use(cookieParser());

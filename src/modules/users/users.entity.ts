@@ -14,7 +14,10 @@ import { UserDto } from './dto/user.dto';
 })
 export class UsersEntity implements UserDto {
   @PrimaryColumn({ type: 'varchar' })
-  firebaseId: string;
+  uid: string;
+
+  @Column({ type: 'varchar' })
+  email: string;
 
   @Column({ type: 'varchar' })
   name: string;

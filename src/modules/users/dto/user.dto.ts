@@ -1,5 +1,6 @@
 export class UserDto {
-  firebaseId: string;
+  uid: string;
+  email: string;
   name: string;
   dob: Date;
   isAdmin: boolean;

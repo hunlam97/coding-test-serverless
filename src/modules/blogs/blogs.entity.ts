@@ -2,10 +2,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import {
   Entity,
   Column,
-  PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
   DeleteDateColumn,
+  PrimaryColumn,
 } from 'typeorm';
 import { BlogDto } from './dto/blog.dto';
 
@@ -13,11 +13,14 @@ import { BlogDto } from './dto/blog.dto';
   name: 'Blogs',
 })
 export class BlogsEntity implements BlogDto {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryColumn({ type: 'varchar' })
+  id: string;
 
   @Column({ type: 'varchar' })
   title: string;
+
+  @Column({ type: 'varchar' })
+  imageUrl: string;
 
   @Column({ type: 'varchar' })
   content: string;

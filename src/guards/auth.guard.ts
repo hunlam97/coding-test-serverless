@@ -1,10 +1,4 @@
-import {
-  Injectable,
-  CanActivate,
-  ExecutionContext,
-  Inject,
-} from '@nestjs/common';
-import { Request } from 'express';
+import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
 import { UsersService } from '../modules/users/users.service';
 import { FirebaseService } from '../providers/firebase/firebase.service';
 
@@ -16,11 +10,13 @@ export class AuthGuard implements CanActivate {
   ) {}
 
   canActivate = async (context: ExecutionContext): Promise<boolean> => {
-    const request = context.switchToHttp().getRequest<Request>();
+    const request = context
+      .switchToHttp()
+      .getRequest<Request & { cookies: Record<string, string> }>();
     const token = request.cookies['token'];
     try {
       const { uid } = await this.firebaseService.verifyToken(token);
-      const currentUser = this.usersService.getById(uid)[0];
+      const currentUser = await this.usersService.getById(uid);
       if (currentUser) {
         request['currentUser'] = currentUser;
         return true;

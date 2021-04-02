@@ -1,14 +1,18 @@
 import { CreateBlogDto } from '.';
-import { IsBoolean, IsOptional, IsAlphanumeric } from 'class-validator';
+import { IsBoolean, IsOptional, IsUrl, IsString } from 'class-validator';
 
 export class UpdateBlogDto implements Partial<CreateBlogDto> {
   @IsOptional()
-  @IsAlphanumeric()
+  @IsString()
   title?: string;
 
   @IsOptional()
-  @IsAlphanumeric()
+  @IsString()
   content?: string;
+
+  @IsOptional()
+  @IsUrl()
+  imageUrl?: string;
 
   @IsOptional()
   @IsBoolean()

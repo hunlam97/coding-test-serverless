@@ -14,15 +14,16 @@ export class UsersService {
     private firebaseService: FirebaseService,
   ) {}
 
-  getById = async (firebaseId: string) => {
-    return this.usersResitory.findByIds([firebaseId]);
+  getById = async (uid: string) => {
+    return (await this.usersResitory.findByIds([uid]))[0];
   };
 
-  create(body: PublicUserDto) {
-    return this.usersResitory.create(body);
-  }
+  create = async (body: Omit<PublicUserDto, 'isAdmin' | 'isActive'>) => {
+    await this.usersResitory.insert(body);
+    return this.getById(body.uid);
+  };
 
-  edit(firebaseId: string, body: UpdateUserDto) {
-    return this.usersResitory.update({ firebaseId }, body);
-  }
+  edit = (uid: string, body: UpdateUserDto) => {
+    return this.usersResitory.update({ uid }, body);
+  };
 }

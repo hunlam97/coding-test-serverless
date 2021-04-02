@@ -1,4 +1,4 @@
-import { IsAlphanumeric, IsDate, IsOptional } from 'class-validator';
+import { IsAlphanumeric, IsISO8601, IsOptional } from 'class-validator';
 import { UserDto } from './user.dto';
 
 export class UpdateUserDto implements Pick<UserDto, 'name' | 'dob'> {
@@ -7,6 +7,6 @@ export class UpdateUserDto implements Pick<UserDto, 'name' | 'dob'> {
   name: string;
 
   @IsOptional()
-  @IsDate()
+  @IsISO8601()
   dob: Date;
 }

@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { FirebaseService } from '../../providers/firebase/firebase.service';
 import { Repository } from 'typeorm';
 import { BlogsEntity } from './blogs.entity';
-import { CreateBlogDto, UpdateBlogDto } from './dto';
+import { BlogDto, CreateBlogDto, UpdateBlogDto } from './dto';
 
 @Injectable()
 export class BlogsService {
@@ -13,22 +13,34 @@ export class BlogsService {
 
     private firebaseService: FirebaseService,
   ) {}
+  create = async (body: CreateBlogDto) => {
+    const bodyWithTimeStamp = {
+      ...body,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+    const document = await (
+      await this.firebaseService.getCollection('blogs').add(bodyWithTimeStamp)
+    ).get();
+    const { id } = document;
+    const data = (
+      await this.firebaseService.getCollection('blogs').doc(id).get()
+    ).data();
+    await this.blogsResitory.insert({ id, ...data });
+    return this.blogsResitory.findOne(id);
+  };
 
-  getAll() {
-    return this.blogsResitory.find();
-  }
+  edit = async (id: string, body: UpdateBlogDto) => {
+    const bodyWithTimeStamp = { ...body, updatedAt: new Date().toISOString() };
+    await this.firebaseService
+      .getCollection('blogs')
+      .doc(id)
+      .set(bodyWithTimeStamp);
+    return this.blogsResitory.update({ id }, bodyWithTimeStamp);
+  };
 
-  getById(id: number) {
-    return this.blogsResitory.findByIds([id]);
-  }
-
-  create(body: CreateBlogDto) {
-    return this.blogsResitory.create(body);
-  }
-
-  edit(id: number, body: UpdateBlogDto) {
-    return this.blogsResitory.update({ id }, body);
-  }
-
-  delete(id: number) {}
+  delete = async (id: string) => {
+    await this.firebaseService.getCollection('blogs').doc(id).delete();
+    return this.blogsResitory.update({ id }, { isArchived: true });
+  };
 }

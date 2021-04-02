@@ -3,23 +3,32 @@ import {
   IsNotEmpty,
   IsBoolean,
   IsAlphanumeric,
-  IsNumber,
+  IsUrl,
+  IsOptional,
+  IsString,
 } from 'class-validator';
 
-export class PublicBlogDto
-  implements Omit<BlogDto, 'createdAt' | 'updatedAt' | 'deletedAt'> {
-  @IsNumber()
+export class PublicBlogDto implements BlogDto {
+  @IsAlphanumeric()
   @IsNotEmpty()
-  id: number;
+  id: string;
 
   @IsNotEmpty()
-  @IsAlphanumeric()
+  @IsString()
   title: string;
 
+  @IsOptional()
+  @IsUrl()
+  imageUrl: string;
+
   @IsNotEmpty()
-  @IsAlphanumeric()
+  @IsString()
   content: string;
 
   @IsBoolean()
   isArchived: boolean;
+
+  createdAt: Date;
+  updatedAt: Date;
+  deletedAt: Date;
 }

@@ -10,5 +10,5 @@ export const DatabaseProvider = TypeOrmModule.forRoot({
   password: process.env.DB_PASSWORD,
   database: process.env.DB_DATABASE,
   synchronize: true,
-  autoLoadEntities: true,
+  entities: [BlogsEntity, UsersEntity],
 });

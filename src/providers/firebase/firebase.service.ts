@@ -12,9 +12,17 @@ export class FirebaseService {
     });
   }
 
+  getCollection = (path: string) => {
+    return firebaseAdmin.firestore().collection(path);
+  };
+
   test() {
     return 'firebase on!';
   }
+
+  createUser = (email: string, password: string) => {
+    return firebaseAdmin.auth().createUser({ email, password });
+  };
 
   verifyToken = (token: string) => {
     return firebaseAdmin.auth().verifyIdToken(token);

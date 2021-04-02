@@ -6,36 +6,62 @@ import {
   Body,
   UseGuards,
   Request,
+  Response,
+  Param,
+  Res,
+  Req,
 } from '@nestjs/common';
 import { AuthGuard } from '../../guards/auth.guard';
+import { FirebaseService } from '../../providers/firebase/firebase.service';
 import { PublicUserDto, UpdateUserDto } from './dto';
+import { CreateUserDto } from './dto/createUser.dto';
 import { UsersService } from './users.service';
 
 @Controller({ path: '/users' })
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    private readonly usersService: UsersService,
+    private firebaseService: FirebaseService,
+  ) {}
 
-  @UseGuards(AuthGuard)
   @Get('/ping')
-  ping(@Request() req: Express.Request & { currentUser: PublicUserDto }) {
-    return req.currentUser;
+  ping() {
+    return 'pong!';
   }
 
   @UseGuards(AuthGuard)
-  @Get('/me')
-  getById(@Request() req: Express.Request & { currentUser: PublicUserDto }) {
-    return req.currentUser;
+  @Get('/:id')
+  async getById(
+    @Param('id') id: string,
+    @Request() req: Request & { currentUser: PublicUserDto },
+  ) {
+    if (id === 'me') {
+      return req.currentUser;
+    }
+    return this.usersService.getById(id);
   }
 
-  @Post('/create')
-  create(@Body() body: PublicUserDto) {}
+  @Post('/signup')
+  async signup(
+    @Body() { email, password, dob, name }: CreateUserDto,
+    @Res() resp: Response,
+  ) {
+    const firebaseUser = await this.firebaseService.createUser(email, password);
+    const publicUser = await this.usersService.create({
+      name,
+      email,
+      dob,
+      uid: firebaseUser.uid,
+    });
+    return publicUser;
+  }
 
   @UseGuards(AuthGuard)
   @Patch('/edit')
-  edit(
-    @Request() req: Express.Request & { currentUser: PublicUserDto },
+  async edit(
+    @Req() req: Request & { currentUser: PublicUserDto },
     @Body() body: UpdateUserDto,
   ) {
-    return this.usersService.edit(req.currentUser.firebaseId, body);
+    return this.usersService.edit(req.currentUser.uid, body);
   }
 }
