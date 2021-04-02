@@ -1,4 +1,4 @@
-Serverless backend with NestJs, TypeORM and Firebase Admin.
+Serverless backend with NestJs, TypeORM and Firebase Admin. Up and running at `https://1tyuaqxn8c.execute-api.us-east-1.amazonaws.com/dev/`
 
 Deploy-ready for AWS Lambda.
 
