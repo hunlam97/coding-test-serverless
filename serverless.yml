@@ -10,6 +10,12 @@ provider:
   name: aws
   runtime: nodejs12.x
   lambdaHashingVersion: '20201221'
+  environment:
+    DB_HOST: fullstack-test-db.c5vjkdqazbna.us-east-1.rds.amazonaws.com
+    DB_USERNAME: postgres
+    DB_PASSWORD: FR9DQE6CwWtyvXdkAI1H
+    DB_PORT: 5432
+    DB_DATABASE: postgres
 
 plugins:
   - serverless-plugin-typescript
