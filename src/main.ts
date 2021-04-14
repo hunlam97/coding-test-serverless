@@ -23,13 +23,22 @@ process.on('uncaughtException', (reason) => {
   console.error(reason);
 });
 
+const corsConfig = {
+  origin: true,
+  credentials: true,
+};
+
 async function bootstrapServer(): Promise<Server> {
   if (!cachedServer) {
     try {
       const expressApp = express();
       const adapter = new ExpressAdapter(expressApp);
       const nestApp = await NestFactory.create(AppModule, adapter);
-      nestApp.enableCors();
+      nestApp.enableCors({
+        allowedHeaders: ['authorization', 'cookie'],
+        origin: true,
+        credentials: true,
+      });
       nestApp.useGlobalPipes(new ValidationPipe());
       nestApp.use(eventContext());
       nestApp.use(cookieParser());

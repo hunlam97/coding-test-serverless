@@ -13,7 +13,11 @@ export class AuthGuard implements CanActivate {
     const request = context
       .switchToHttp()
       .getRequest<Request & { cookies: Record<string, string> }>();
-    const token = request.cookies['token'];
+    const bearer = request.headers['authorization'];
+    if (!bearer) {
+      return false;
+    }
+    const token = bearer.replace('Bearer ', '');
     try {
       const { uid } = await this.firebaseService.verifyToken(token);
       const currentUser = await this.usersService.getById(uid);
